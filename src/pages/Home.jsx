@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon, UserIcon, ShoppingBagIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { products } from "./Products";
 import { translations } from "./translations";
 import { Fragment } from "react";
@@ -36,6 +36,7 @@ export default function Hero() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const sessionId = getSessionId();
+  const navigate = useNavigate();
 
   // Cargar carrito desde el API al iniciar
   useEffect(() => {
@@ -73,12 +74,12 @@ export default function Hero() {
 
       // Añadir localmente primero para feedback inmediato
       const existingItem = cartItems.find(item =>
-        item.id === product.id || item._id === product._id
+        (item._id && product._id && item._id === product._id) || (item.id !== undefined && product.id !== undefined && item.id === product.id)
       );
 
       if (existingItem) {
         setCartItems(cartItems.map(item =>
-          (item.id === product.id || item._id === product._id)
+          ((item._id && product._id && item._id === product._id) || (item.id !== undefined && product.id !== undefined && item.id === product.id))
             ? { ...item, quantity: (item.quantity || 1) + 1 }
             : item
         ));
@@ -106,9 +107,10 @@ export default function Hero() {
   const removeFromCart = async (product) => {
     try {
       const productId = product._id || product.id;
-      setCartItems(cartItems.filter(item =>
-        item.id !== product.id && item._id !== product._id
-      ));
+      setCartItems(cartItems.filter(item => {
+        const itemId = item._id || item.id;
+        return itemId !== productId;
+      }));
 
       if (product._id) {
         await fetch(`${API_URL}/cart/${sessionId}/item/${product._id}`, {
@@ -431,8 +433,8 @@ export default function Hero() {
                         <div className="mt-8">
                           <div className="flow-root">
                             <ul role="list" className="-my-6 divide-y divide-gray-200">
-                              {cartItems.map((product) => (
-                                <li key={product.id} className="flex py-6">
+                              {cartItems.map((product, idx) => (
+                                <li key={product._id || `cart-${product.id}-${idx}`} className="flex py-6">
                                   <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <img
                                       src={product.imageSrc}
@@ -483,12 +485,15 @@ export default function Hero() {
                           {t.cart.shipping_note}
                         </p>
                         <div className="mt-6">
-                          <a
-                            href="#"
-                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                          <button
+                            onClick={() => {
+                              setCartOpen(false);
+                              navigate("/checkout", { state: { cartItems, lang } });
+                            }}
+                            className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 transition"
                           >
                             {t.cart.checkout}
-                          </a>
+                          </button>
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                           <p>
