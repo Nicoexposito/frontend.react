@@ -261,7 +261,7 @@ export default function Checkout() {
                                             onChange={(e) => setFullName(e.target.value)}
                                             disabled={!!user}
                                             required
-                                            placeholder="John Doe"
+                                            placeholder="Nico Exposito"
                                             className="input-field"
                                         />
                                     </div>
@@ -273,7 +273,7 @@ export default function Checkout() {
                                             onChange={(e) => setEmail(e.target.value)}
                                             disabled={!!user}
                                             required
-                                            placeholder="john@example.com"
+                                            placeholder="nicoexposito@example.com"
                                             className="input-field"
                                         />
                                     </div>
@@ -389,7 +389,7 @@ export default function Checkout() {
                                             value={cardholder}
                                             onChange={(e) => setCardholder(e.target.value)}
                                             required
-                                            placeholder="JOHN DOE"
+                                            placeholder="Nico Exposito"
                                             className="input-field uppercase"
                                         />
                                     </div>
