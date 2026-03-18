@@ -117,13 +117,64 @@ export default function Checkout() {
         return v;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setOrderPlaced(true);
-        }, 1500);
+
+        try {
+            const token = localStorage.getItem("token");
+
+            if (token && user) {
+                // Usuario autenticado → crear venta real en el backend
+                const ventaItems = cartItems.map(item => ({
+                    productId: item._id,
+                    quantitat: item.quantity || 1,
+                    talla: item.talla || "M",
+                }));
+
+                const res = await fetch("http://localhost:3000/api/ventas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        items: ventaItems,
+                        metodePagament: "targeta",
+                        adreca: {
+                            carrer: street,
+                            ciutat: city,
+                            codiPostal: postalCode,
+                            pais: country,
+                        },
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.status === "success") {
+                    // Limpiar carrito del servidor
+                    const sessionId = localStorage.getItem("cartSessionId");
+                    if (sessionId) {
+                        await fetch(`http://localhost:3000/api/cart/${sessionId}`, {
+                            method: "DELETE",
+                        }).catch(() => {});
+                    }
+                    setOrderPlaced(true);
+                } else {
+                    alert(data.message || "Error al procesar la compra");
+                }
+            } else {
+                // Sin login → simulación local
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                setOrderPlaced(true);
+            }
+        } catch (err) {
+            console.error("Error en checkout:", err);
+            alert("Error de conexión. Inténtalo de nuevo.");
+        }
+
+        setIsSubmitting(false);
     };
 
     // ========== EMPTY CART ==========

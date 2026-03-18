@@ -35,8 +35,23 @@ export default function Hero() {
   const [lang, setLang] = useState("en");
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(null);
   const sessionId = getSessionId();
   const navigate = useNavigate();
+
+  // Detectar usuario logueado
+  useEffect(() => {
+    const stored = localStorage.getItem("loggedUser");
+    if (stored) {
+      try { setLoggedUser(JSON.parse(stored)); } catch (e) { /* ignore */ }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedUser");
+    localStorage.removeItem("token");
+    setLoggedUser(null);
+  };
 
   // Cargar carrito desde el API al iniciar
   useEffect(() => {
@@ -253,28 +268,49 @@ export default function Hero() {
                 >
                   <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            to="/login"
-                            className={`${active ? "bg-gray-100" : ""
-                              } block px-4 py-2 text-sm font-medium text-gray-900 text-left w-full`}
-                          >
-                            {lang === "es" ? "Iniciar Sesión" : "Login"}
-                          </Link>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            to="/register"
-                            className={`${active ? "bg-gray-100" : ""
-                              } block px-4 py-2 text-sm font-medium text-gray-900 text-left w-full`}
-                          >
-                            {lang === "es" ? "Registrarse" : "Register"}
-                          </Link>
-                        )}
-                      </MenuItem>
+                      {loggedUser ? (
+                        <>
+                          <div className="px-4 py-2 text-sm text-gray-700 font-semibold border-b border-gray-100">
+                            {loggedUser.nom} {loggedUser.primerCognom || ""}
+                          </div>
+                          <MenuItem>
+                            {({ active }) => (
+                              <button
+                                onClick={handleLogout}
+                                className={`${active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm font-medium text-red-600 text-left w-full`}
+                              >
+                                {lang === "es" ? "Cerrar Sesión" : "Logout"}
+                              </button>
+                            )}
+                          </MenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <MenuItem>
+                            {({ active }) => (
+                              <Link
+                                to="/login"
+                                className={`${active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm font-medium text-gray-900 text-left w-full`}
+                              >
+                                {lang === "es" ? "Iniciar Sesión" : "Login"}
+                              </Link>
+                            )}
+                          </MenuItem>
+                          <MenuItem>
+                            {({ active }) => (
+                              <Link
+                                to="/register"
+                                className={`${active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm font-medium text-gray-900 text-left w-full`}
+                              >
+                                {lang === "es" ? "Registrarse" : "Register"}
+                              </Link>
+                            )}
+                          </MenuItem>
+                        </>
+                      )}
                     </div>
                   </MenuItems>
                 </Transition>
