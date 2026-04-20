@@ -524,7 +524,7 @@ export default function Hero() {
                           <button
                             onClick={() => {
                               setCartOpen(false);
-                              navigate("/checkout", { state: { cartItems, lang } });
+                              navigate("/cart", { state: { cartItems, lang } });
                             }}
                             className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 transition"
                           >
