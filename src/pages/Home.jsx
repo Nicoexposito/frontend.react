@@ -275,6 +275,30 @@ export default function Hero() {
                           </div>
                           <MenuItem>
                             {({ active }) => (
+                              <Link
+                                to="/profile"
+                                className={`${active ? "bg-gray-100" : ""
+                                  } block px-4 py-2 text-sm font-medium text-gray-900 text-left w-full`}
+                              >
+                                {lang === "es" ? "Mi Perfil" : "My Profile"}
+                              </Link>
+                            )}
+                          </MenuItem>
+                          {loggedUser.rol === 'admin' && (
+                            <MenuItem>
+                              {({ active }) => (
+                                <Link
+                                  to="/admin"
+                                  className={`${active ? "bg-gray-100" : ""
+                                    } block px-4 py-2 text-sm font-medium text-indigo-600 text-left w-full`}
+                                >
+                                  {lang === "es" ? "Panel Admin" : "Admin Panel"}
+                                </Link>
+                              )}
+                            </MenuItem>
+                          )}
+                          <MenuItem>
+                            {({ active }) => (
                               <button
                                 onClick={handleLogout}
                                 className={`${active ? "bg-gray-100" : ""
