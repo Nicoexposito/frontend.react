@@ -61,6 +61,11 @@ export default function Hero() {
   const loadCart = async () => {
     try {
       const response = await fetch(`${API_URL}/cart/${sessionId}`);
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || !contentType.includes("application/json")) {
+        setCartItems([]);
+        return;
+      }
       const data = await response.json();
       if (data.status === "success" && data.data.items) {
         // Mapear items del carrito a formato del frontend
@@ -147,6 +152,24 @@ export default function Hero() {
   };
 
   const t = translations[lang];
+  const featuredProducts = products.slice(0, 4);
+  const heroProducts = featuredProducts.slice(0, 3);
+  const retroProducts = [products[2], products[7], products[14], products[10]].filter(Boolean);
+  const homeCopy = {
+    badge: lang === "es" ? "Nueva temporada 25/26" : "New season 25/26",
+    headline: lang === "es" ? "La camiseta que se siente como dia de partido" : "Kits that feel like matchday",
+    subtitle: lang === "es"
+      ? "Camisetas oficiales, retros seleccionadas y drops modernos para hinchas que miran cada detalle."
+      : "Official jerseys, curated retro picks, and modern drops for fans who notice every detail.",
+    shop: lang === "es" ? "Ver camisetas" : "Shop kits",
+    retro: lang === "es" ? "Coleccion retro" : "Retro collection",
+    pitch: lang === "es" ? "Tienda de camisetas de futbol" : "Football jersey store",
+    stats: [
+      { value: "+15", label: lang === "es" ? "kits activos" : "active kits" },
+      { value: "24h", label: lang === "es" ? "preparacion" : "dispatch prep" },
+      { value: "100%", label: lang === "es" ? "look estadio" : "stadium look" },
+    ],
+  };
 
   // Controla la sección mostrada
   const [section, setSection] = useState("home");
@@ -154,25 +177,27 @@ export default function Hero() {
   const changeSection = (href) => {
     setSection(href);
     setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div className="relative bg-blue-100 min-h-screen">
+    <div className="relative min-h-screen" style={{ fontFamily: "var(--font-sans)" }}>
       {/* Header / Navigation */}
-      <header className="absolute inset-x-0 top-0 z-50">
+      <header className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-500 ${section === 'home' ? 'border-white/10 bg-[#06140d]/70 backdrop-blur-xl' : 'border-emerald-900/10 bg-white/90 shadow-lg shadow-emerald-950/5 backdrop-blur-xl'}`}>
         <nav
-          className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+          className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8"
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
+            <button onClick={() => changeSection("home")} className="-m-1.5 flex items-center gap-3 p-1.5 text-left">
               <span className="sr-only">EXPOMANIA</span>
               <img
-                className="h-10 w-auto"
+                className="h-10 w-auto drop-shadow-md"
                 src="./img/logo.png"
                 alt="EXPOMANIA Logo"
               />
-            </a>
+              <span className={`hidden text-sm font-black uppercase sm:block ${section === 'home' ? 'text-white' : 'text-emerald-950'}`}>EXPOMANIA</span>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -180,7 +205,7 @@ export default function Hero() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 hover:bg-gray-200"
+              className={`-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 ${section === 'home' ? 'text-white/80 hover:bg-white/10' : 'text-emerald-950 hover:bg-emerald-50'}`}
             >
               <span className="sr-only">Open main menu</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -192,7 +217,7 @@ export default function Hero() {
               <button
                 key={item.name}
                 onClick={() => changeSection(item.href)}
-                className="text-lg font-semibold text-gray-900 hover:text-indigo-600 transition-colors"
+                className={`nav-link text-sm font-semibold uppercase transition-colors duration-300 ${section === 'home' ? 'text-white/75 hover:text-white' : 'text-emerald-950/75 hover:text-emerald-700'}`}
               >
                 {t.navigation[item.name]}
               </button>
@@ -201,9 +226,9 @@ export default function Hero() {
             <div className="flex items-center gap-4 ml-6">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                    <GlobeAltIcon
-                      className="-mr-1 ml-1 h-6 w-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                    <MenuButton className={`group inline-flex justify-center text-sm font-medium transition-colors ${section === 'home' ? 'text-white/70 hover:text-white' : 'text-emerald-950/75 hover:text-emerald-700'}`}>
+                     <GlobeAltIcon
+                       className={`-mr-1 ml-1 h-6 w-6 shrink-0 transition-colors ${section === 'home' ? 'text-white/60 group-hover:text-white' : 'text-emerald-900/60 group-hover:text-emerald-700'}`}
                       aria-hidden="true"
                     />
                   </MenuButton>
@@ -249,9 +274,9 @@ export default function Hero() {
 
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                    <UserIcon
-                      className="-mr-1 ml-1 h-6 w-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                    <MenuButton className={`group inline-flex justify-center text-sm font-medium transition-colors ${section === 'home' ? 'text-white/70 hover:text-white' : 'text-emerald-950/75 hover:text-emerald-700'}`}>
+                     <UserIcon
+                       className={`-mr-1 ml-1 h-6 w-6 shrink-0 transition-colors ${section === 'home' ? 'text-white/60 group-hover:text-white' : 'text-emerald-900/60 group-hover:text-emerald-700'}`}
                       aria-hidden="true"
                     />
                   </MenuButton>
@@ -290,7 +315,7 @@ export default function Hero() {
                                 <Link
                                   to="/admin"
                                   className={`${active ? "bg-gray-100" : ""
-                                    } block px-4 py-2 text-sm font-medium text-indigo-600 text-left w-full`}
+                                    } block px-4 py-2 text-sm font-medium text-emerald-700 text-left w-full`}
                                 >
                                   {lang === "es" ? "Panel Admin" : "Admin Panel"}
                                 </Link>
@@ -342,12 +367,12 @@ export default function Hero() {
 
               <button
                 onClick={() => setCartOpen(true)}
-                className="text-gray-900 hover:text-indigo-600 transition-colors relative"
+                className={`transition-all duration-300 relative group ${section === 'home' ? 'text-white/80 hover:text-white' : 'text-emerald-950/75 hover:text-emerald-700'}`}
               >
                 <span className="sr-only">Shopping Cart</span>
-                <ShoppingBagIcon className="h-6 w-6" />
+                <ShoppingBagIcon className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
                 {cartItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#d8a31a] text-[10px] font-bold text-emerald-950 shadow-lg">
                     {cartItems.length}
                   </span>
                 )}
@@ -364,21 +389,22 @@ export default function Hero() {
           className="lg:hidden"
         >
           <div className="fixed inset-0 z-50" />
-          <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full bg-white p-6 sm:max-w-sm shadow-lg">
+          <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full bg-[#f7f8f2] p-6 shadow-2xl sm:max-w-sm">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
+              <button onClick={() => changeSection("home")} className="-m-1.5 flex items-center gap-3 p-1.5">
                 <span className="sr-only">EXPOMANIA</span>
                 <img
                   className="h-10 w-auto"
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                  alt=""
+                  src="./img/logo.png"
+                  alt="EXPOMANIA Logo"
                 />
-              </a>
+                <span className="text-sm font-black uppercase text-emerald-950">EXPOMANIA</span>
+              </button>
 
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="-m-2.5 p-2.5 rounded-md text-gray-700 hover:bg-gray-200"
+                className="-m-2.5 rounded-md p-2.5 text-emerald-950 hover:bg-emerald-100"
               >
                 <span className="sr-only">Close menu</span>
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -390,7 +416,7 @@ export default function Hero() {
                 <button
                   key={item.name}
                   onClick={() => changeSection(item.href)}
-                  className="block w-full rounded-md px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50 text-left"
+                  className="block w-full rounded-md px-3 py-2 text-left text-base font-semibold text-emerald-950 hover:bg-emerald-100"
                 >
                   {t.navigation[item.name]}
                 </button>
@@ -402,45 +428,184 @@ export default function Hero() {
 
       {/* RENDERIZAR SECCIONES */}
       <main className="">
-        {/* HERO – NO TOCADO */}
         {section === "home" && (
-          <div className="relative isolate flex flex-col justify-center items-center text-center py-32 lg:py-48 min-h-screen">
-            <h1 className="text-6xl font-extrabold text-gray-900 sm:text-7xl lg:text-8xl">
-              {t.hero.title}
-            </h1>
+          <section className="relative isolate overflow-hidden bg-[#06140d] pt-24 text-white">
+            <div className="absolute inset-0 stadium-surface pitch-lines opacity-95" aria-hidden="true" />
+            <div className="absolute inset-0 stadium-lights" aria-hidden="true" />
 
-            <p className="mt-6 max-w-xl text-xl sm:text-2xl text-gray-700">
-              {t.hero.subtitle}
-            </p>
+            <div className="relative mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-10 px-6 pb-10 pt-10 lg:grid-cols-[1fr_0.95fr] lg:px-8">
+              <div className="max-w-3xl">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase text-lime-100 backdrop-blur">
+                  <span className="h-2 w-2 rounded-full bg-[#f4c542]" />
+                  {homeCopy.badge}
+                </div>
 
-            <div className="mt-12 flex flex-col sm:flex-row justify-center gap-6">
-              <a
-                href="#"
-                className="rounded-md bg-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-lg hover:bg-indigo-500 transition"
-              >
-                {t.hero.shop_now}
-              </a>
-              <a
-                href="#"
-                className="rounded-md border-2 border-indigo-600 px-8 py-4 text-lg font-bold text-indigo-600 hover:bg-indigo-50 transition"
-              >
-                {t.hero.explore_retro}
-              </a>
+                <p className="mb-3 text-sm font-bold uppercase text-[#f4c542]">{homeCopy.pitch}</p>
+                <h1 className="max-w-4xl text-5xl font-black leading-[0.95] sm:text-6xl lg:text-8xl" style={{ fontFamily: 'var(--font-display)' }}>
+                  {t.hero.title}
+                </h1>
+                <p className="mt-5 max-w-2xl text-2xl font-black leading-tight text-white">
+                  {homeCopy.headline}
+                </p>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
+                  {homeCopy.subtitle}
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    onClick={() => changeSection('products')}
+                    className="btn-shine inline-flex items-center justify-center rounded-lg bg-[#f4c542] px-8 py-4 text-base font-black text-emerald-950 shadow-xl shadow-black/20 transition-all duration-300 hover:bg-[#ffdb63] hover:scale-[1.02]"
+                  >
+                    {homeCopy.shop}
+                  </button>
+                  <button
+                    onClick={() => changeSection('retros')}
+                    className="inline-flex items-center justify-center rounded-lg border border-white/25 bg-white/10 px-8 py-4 text-base font-bold text-white backdrop-blur transition-all duration-300 hover:bg-white/18"
+                  >
+                    {homeCopy.retro}
+                  </button>
+                </div>
+
+                <div className="mt-10 grid max-w-xl grid-cols-3 overflow-hidden rounded-lg border border-white/10 bg-black/20 backdrop-blur">
+                  {homeCopy.stats.map((item) => (
+                    <div key={item.label} className="border-r border-white/10 px-4 py-3 last:border-r-0">
+                      <p className="text-2xl font-black text-white">{item.value}</p>
+                      <p className="text-xs font-semibold uppercase text-white/58">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative min-h-[30rem]">
+                <div className="absolute left-1/2 top-1/2 h-[78%] w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15" aria-hidden="true" />
+                <div className="grid h-full grid-cols-2 gap-4">
+                  {heroProducts.map((product, index) => (
+                    <button
+                      key={product.id}
+                      onClick={() => changeSection('products')}
+                      className={`group kit-card-surface overflow-hidden rounded-lg border border-white/18 p-4 text-left shadow-2xl shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:border-[#f4c542]/60 ${index === 0 ? 'col-span-2 mx-auto w-[72%]' : ''}`}
+                    >
+                      <div className="kit-image-stage flex aspect-[4/5] items-center justify-center rounded-md p-4">
+                        <img src={product.imageSrc} alt={product.imageAlt} className="h-full w-full object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105" />
+                      </div>
+                      <div className="mt-3 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black text-emerald-950">{product.equip}</p>
+                          <p className="truncate text-xs font-semibold text-emerald-900/60">{product.color?.[lang]}</p>
+                        </div>
+                        <span className="rounded-md bg-emerald-950 px-2.5 py-1 text-xs font-black text-[#f4c542]">{product.price}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div
-              className="absolute inset-0 -z-10 overflow-hidden"
-              aria-hidden="true"
-            >
-              <div className="absolute top-[-25%] left-1/2 w-[70rem] -translate-x-1/2 rotate-[25deg] bg-gradient-to-tr from-pink-400 to-indigo-600 opacity-25 blur-3xl"></div>
-              <div className="absolute bottom-[-25%] left-1/2 w-[70rem] -translate-x-1/2 rotate-[-25deg] bg-gradient-to-tr from-indigo-400 to-pink-600 opacity-25 blur-3xl"></div>
+            <div className="relative border-y border-white/10 bg-black/25">
+              <div className="mx-auto grid max-w-7xl gap-3 px-6 py-4 text-xs font-bold uppercase text-white/70 sm:grid-cols-3 lg:px-8">
+                <span>Matchday drops</span>
+                <span className="text-[#f4c542]">Real Madrid / Barcelona / Atletico / Andorra</span>
+                <span className="sm:text-right">Authentic look, modern checkout</span>
+              </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* PRODUCTS SECTION */}
-        {/* PRODUCTS SECTION */}
         {section === "products" && <Products lang={lang} onAddToCart={addToCart} />}
+
+        {section === "about" && (
+          <section className="min-h-screen bg-[#f5f7f2] pt-28 text-emerald-950">
+            <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+              <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+                <div>
+                  <p className="text-sm font-black uppercase text-[#9a1c20]">EXPOMANIA CLUBHOUSE</p>
+                  <h2 className="mt-3 text-4xl font-black leading-tight sm:text-5xl">
+                    {lang === "es" ? "Una tienda pensada para fans de camiseta, no solo para comprar rapido." : "A store built for shirt fans, not just quick shopping."}
+                  </h2>
+                  <p className="mt-5 text-lg leading-8 text-emerald-950/70">
+                    {lang === "es"
+                      ? "La experiencia mezcla catalogo claro, imagen grande, filtros utiles y una estetica de estadio moderno para que cada camiseta luzca como protagonista."
+                      : "The experience blends clear catalog browsing, large kit imagery, useful filters, and a modern stadium mood so every jersey feels like the main event."}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {featuredProducts.map((product) => (
+                    <div key={product.id} className="kit-card-surface overflow-hidden rounded-lg border border-emerald-900/10 p-4 shadow-lg shadow-emerald-950/8">
+                      <div className="kit-image-stage flex aspect-square items-center justify-center rounded-md p-4">
+                        <img src={product.imageSrc} alt={product.imageAlt} className="h-full w-full object-contain drop-shadow-xl" />
+                      </div>
+                      <p className="mt-3 text-sm font-black">{product.equip}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {section === "retros" && (
+          <section className="min-h-screen bg-[#08150e] pt-28 text-white">
+            <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+              <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <p className="text-sm font-black uppercase text-[#f4c542]">Retro room</p>
+                  <h2 className="mt-2 text-4xl font-black sm:text-5xl">
+                    {lang === "es" ? "Camisetas con alma de clasico." : "Kits with classic soul."}
+                  </h2>
+                </div>
+                <button onClick={() => changeSection('products')} className="rounded-lg bg-[#f4c542] px-5 py-3 text-sm font-black text-emerald-950">
+                  {lang === "es" ? "Ver catalogo completo" : "View full catalog"}
+                </button>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {retroProducts.map((product) => (
+                  <button key={product.id} onClick={() => changeSection('products')} className="group kit-card-surface rounded-lg border border-white/10 p-4 text-left transition duration-300 hover:-translate-y-1 hover:border-[#f4c542]">
+                    <div className="kit-image-stage flex aspect-[4/5] items-center justify-center rounded-md p-4">
+                      <img src={product.imageSrc} alt={product.imageAlt} className="h-full w-full object-contain drop-shadow-xl transition duration-500 group-hover:scale-105" />
+                    </div>
+                    <p className="mt-4 text-base font-black text-emerald-950">{product.equip}</p>
+                    <p className="text-sm font-semibold text-emerald-900/65">{product.color?.[lang]}</p>
+                    <p className="mt-3 text-lg font-black text-[#9a1c20]">{product.price}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {section === "contact" && (
+          <section className="min-h-screen bg-[#f5f7f2] pt-28 text-emerald-950">
+            <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+              <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+                <div>
+                  <p className="text-sm font-black uppercase text-[#9a1c20]">Support desk</p>
+                  <h2 className="mt-3 text-4xl font-black sm:text-5xl">
+                    {lang === "es" ? "Dudas sobre talla, envio o disponibilidad?" : "Questions about size, shipping, or availability?"}
+                  </h2>
+                  <p className="mt-5 text-lg leading-8 text-emerald-950/70">
+                    {lang === "es" ? "Te ayudamos a elegir la camiseta correcta antes de pasar por caja." : "We help you pick the right shirt before checkout."}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-950/8">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg bg-emerald-50 p-5">
+                      <p className="text-sm font-black uppercase text-emerald-800">Email</p>
+                      <p className="mt-2 font-semibold">support@expomania.com</p>
+                    </div>
+                    <div className="rounded-lg bg-[#fff7df] p-5">
+                      <p className="text-sm font-black uppercase text-[#8a6200]">Horario</p>
+                      <p className="mt-2 font-semibold">Lun - Vie / 9:00 - 18:00</p>
+                    </div>
+                  </div>
+                  <button onClick={() => changeSection('products')} className="mt-6 w-full rounded-lg bg-emerald-950 px-5 py-4 font-black text-white">
+                    {lang === "es" ? "Volver a camisetas" : "Back to kits"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       {/* CART SLIDE-OVER */}
@@ -455,7 +620,7 @@ export default function Hero() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <div className="fixed inset-0 bg-emerald-950/70 transition-opacity" />
           </TransitionChild>
 
           <div className="fixed inset-0 overflow-hidden">
@@ -471,16 +636,16 @@ export default function Hero() {
                   leaveTo="translate-x-full"
                 >
                   <DialogPanel className="pointer-events-auto w-screen max-w-md">
-                    <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                    <div className="flex h-full flex-col overflow-y-scroll bg-[#f7f8f2] shadow-xl">
                       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                         <div className="flex items-start justify-between">
-                          <DialogTitle className="text-lg font-medium text-gray-900">
+                          <DialogTitle className="text-lg font-black text-emerald-950">
                             {t.cart.title}
                           </DialogTitle>
                           <div className="ml-3 flex h-7 items-center">
                             <button
                               type="button"
-                              className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
+                              className="relative -m-2 p-2 text-emerald-950/45 hover:text-emerald-950"
                               onClick={() => setCartOpen(false)}
                             >
                               <span className="absolute -inset-0.5" />
@@ -495,34 +660,34 @@ export default function Hero() {
                             <ul role="list" className="-my-6 divide-y divide-gray-200">
                               {cartItems.map((product, idx) => (
                                 <li key={product._id || `cart-${product.id}-${idx}`} className="flex py-6">
-                                  <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                  <div className="kit-image-stage h-24 w-24 shrink-0 overflow-hidden rounded-md border border-emerald-900/10 p-2">
                                     <img
                                       src={product.imageSrc}
                                       alt={product.imageAlt}
-                                      className="h-full w-full object-cover object-center"
+                                      className="h-full w-full object-contain object-center"
                                     />
                                   </div>
 
                                   <div className="ml-4 flex flex-1 flex-col">
                                     <div>
-                                      <div className="flex justify-between text-base font-medium text-gray-900">
+                                      <div className="flex justify-between text-base font-black text-emerald-950">
                                         <h3>
                                           <a href={product.href}>{product.name[lang]}</a>
                                         </h3>
                                         <p className="ml-4">{product.price}</p>
                                       </div>
-                                      <p className="mt-1 text-sm text-gray-500">
+                                      <p className="mt-1 text-sm font-semibold text-emerald-950/55">
                                         {product.color[lang]}
                                       </p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
-                                      <p className="text-gray-500">{t.cart.qty} {product.quantity || 1}</p>
+                                      <p className="text-emerald-950/55">{t.cart.qty} {product.quantity || 1}</p>
 
                                       <div className="flex">
                                         <button
                                           type="button"
                                           onClick={() => removeFromCart(product)}
-                                          className="font-medium text-indigo-600 hover:text-indigo-500"
+                                          className="font-black text-[#9a1c20] hover:text-red-700"
                                         >
                                           {t.cart.remove}
                                         </button>
@@ -536,12 +701,12 @@ export default function Hero() {
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                        <div className="flex justify-between text-base font-medium text-gray-900">
+                      <div className="border-t border-emerald-900/10 bg-white px-4 py-6 sm:px-6">
+                        <div className="flex justify-between text-base font-black text-emerald-950">
                           <p>{t.cart.subtotal}</p>
                           <p>{calculateSubtotal()}€</p>
                         </div>
-                        <p className="mt-0.5 text-sm text-gray-500">
+                        <p className="mt-0.5 text-sm text-emerald-950/55">
                           {t.cart.shipping_note}
                         </p>
                         <div className="mt-6">
@@ -550,17 +715,17 @@ export default function Hero() {
                               setCartOpen(false);
                               navigate("/cart", { state: { cartItems, lang } });
                             }}
-                            className="w-full flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 transition"
+                            className="flex w-full items-center justify-center rounded-lg border border-transparent bg-emerald-950 px-6 py-3 text-base font-black text-white shadow-sm transition hover:bg-emerald-800"
                           >
                             {t.cart.checkout}
                           </button>
                         </div>
-                        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                        <div className="mt-6 flex justify-center text-center text-sm text-emerald-950/55">
                           <p>
                             {t.cart.or}{" "}
                             <button
                               type="button"
-                              className="font-medium text-indigo-600 hover:text-indigo-500"
+                              className="font-black text-[#9a1c20] hover:text-red-700"
                               onClick={() => setCartOpen(false)}
                             >
                               {t.cart.continue_shopping}

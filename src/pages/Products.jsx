@@ -190,12 +190,12 @@ function FilterSection({ title, isOpen, onToggle, children }) {
         <div className="mb-1">
             <button
                 onClick={onToggle}
-                className="flex items-center justify-between w-full py-3 text-sm font-semibold text-gray-900 uppercase tracking-wider hover:text-indigo-600 transition-colors"
+                className="flex w-full items-center justify-between py-3 text-sm font-black uppercase text-emerald-950 transition-colors hover:text-[#9a1c20]"
             >
                 {title}
                 {isOpen
-                    ? <ChevronUpIcon className="h-4 w-4 text-gray-500" />
-                    : <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                    ? <ChevronUpIcon className="h-4 w-4 text-emerald-900/55" />
+                    : <ChevronDownIcon className="h-4 w-4 text-emerald-900/55" />
                 }
             </button>
             <div
@@ -203,7 +203,7 @@ function FilterSection({ title, isOpen, onToggle, children }) {
             >
                 {children}
             </div>
-            <hr className="border-gray-200" />
+            <hr className="border-emerald-900/10" />
         </div>
     );
 }
@@ -425,9 +425,11 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
 
     if (loading) {
         return (
-            <div className="bg-white py-28 min-h-screen">
+            <div className="stadium-surface flex min-h-screen items-center justify-center py-28">
                 <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
-                    <p className="text-gray-500 animate-pulse">Wait please...</p>
+                    <p className="rounded-lg bg-white/90 px-5 py-3 text-sm font-black uppercase text-emerald-950 shadow-xl animate-pulse">
+                        {lang === "es" ? "Cargando camisetas..." : "Loading kits..."}
+                    </p>
                 </div>
             </div>
         );
@@ -437,13 +439,13 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
     const FilterSidebar = () => (
         <div className="overflow-y-auto max-h-[calc(100vh-10rem)] pr-2 custom-scrollbar">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 sticky top-0 bg-gray-50 py-2 z-10">
-                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-white py-2">
+                <h3 className="flex items-center gap-2 text-lg font-black text-emerald-950">
                     <FunnelIcon className="h-5 w-5" />
                     {lang === "es" ? "Filtros" : "Filters"}
                 </h3>
                 {activeFilterCount > 0 && (
-                    <button onClick={clearAllFilters} className="text-xs font-medium text-indigo-600 hover:text-indigo-500 transition">
+                    <button onClick={clearAllFilters} className="text-xs font-black text-[#9a1c20] transition hover:text-red-700">
                         {lang === "es" ? "Limpiar" : "Clear"} ({activeFilterCount})
                     </button>
                 )}
@@ -454,8 +456,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="space-y-2">
                     {LIGAS.map(liga => (
                         <label key={liga} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedLigas.includes(liga)} onChange={() => toggleFilter(selectedLigas, setSelectedLigas, liga)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">{liga}</span>
+                            <input type="checkbox" checked={selectedLigas.includes(liga)} onChange={() => toggleFilter(selectedLigas, setSelectedLigas, liga)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
+                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{liga}</span>
                         </label>
                     ))}
                 </div>
@@ -466,8 +468,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="space-y-2">
                     {availableTeams.map(team => (
                         <label key={team} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedTeams.includes(team)} onChange={() => toggleFilter(selectedTeams, setSelectedTeams, team)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">{team}</span>
+                            <input type="checkbox" checked={selectedTeams.includes(team)} onChange={() => toggleFilter(selectedTeams, setSelectedTeams, team)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
+                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{team}</span>
                         </label>
                     ))}
                 </div>
@@ -478,8 +480,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="space-y-2">
                     {KIT_TYPES.map(kit => (
                         <label key={kit.value} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedTypes.includes(kit.value)} onChange={() => toggleFilter(selectedTypes, setSelectedTypes, kit.value)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">{lang === "es" ? kit.es : kit.en}</span>
+                            <input type="checkbox" checked={selectedTypes.includes(kit.value)} onChange={() => toggleFilter(selectedTypes, setSelectedTypes, kit.value)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
+                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{lang === "es" ? kit.es : kit.en}</span>
                         </label>
                     ))}
                 </div>
@@ -490,8 +492,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="space-y-2">
                     {MARCAS.map(marca => (
                         <label key={marca} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedMarcas.includes(marca)} onChange={() => toggleFilter(selectedMarcas, setSelectedMarcas, marca)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">{marca}</span>
+                            <input type="checkbox" checked={selectedMarcas.includes(marca)} onChange={() => toggleFilter(selectedMarcas, setSelectedMarcas, marca)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
+                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{marca}</span>
                         </label>
                     ))}
                 </div>
@@ -506,8 +508,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                             onClick={() => toggleFilter(selectedColores, setSelectedColores, c.name)}
                             className={`flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded-md border transition-all duration-200
                                 ${selectedColores.includes(c.name)
-                                    ? "bg-indigo-50 border-indigo-500 text-indigo-700 ring-1 ring-indigo-500"
-                                    : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400"
+                                    ? "bg-emerald-50 border-emerald-700 text-emerald-900 ring-1 ring-emerald-700"
+                                    : "bg-white text-emerald-950/75 border-emerald-900/15 hover:border-[#9a1c20]"
                                 }`}
                         >
                             <span
@@ -528,8 +530,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="space-y-2">
                     {PRICE_RANGES.map((range, idx) => (
                         <label key={idx} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedPriceRanges.includes(idx)} onChange={() => toggleFilter(selectedPriceRanges, setSelectedPriceRanges, idx)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm text-gray-700 group-hover:text-gray-900 transition">{range.label[lang]}</span>
+                            <input type="checkbox" checked={selectedPriceRanges.includes(idx)} onChange={() => toggleFilter(selectedPriceRanges, setSelectedPriceRanges, idx)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
+                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{range.label[lang]}</span>
                         </label>
                     ))}
                 </div>
@@ -542,8 +544,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                         <button key={size} onClick={() => toggleFilter(selectedSizes, setSelectedSizes, size)}
                             className={`px-3 py-1.5 text-sm font-medium rounded-md border transition-all duration-200
                                 ${selectedSizes.includes(size)
-                                    ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                                    : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400 hover:text-indigo-600"
+                                    ? "bg-emerald-950 text-white border-emerald-950 shadow-sm"
+                                    : "bg-white text-emerald-950/75 border-emerald-900/15 hover:border-[#9a1c20] hover:text-[#9a1c20]"
                                 }`}
                         >
                             {size}
@@ -555,29 +557,40 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
     );
 
     return (
-        <div className="bg-white py-16 sm:py-24 min-h-screen">
+        <div className="min-h-screen bg-[#f5f7f2] pb-16 pt-24 text-emerald-950 sm:pt-28 sm:pb-24">
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 10px; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 10px; }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
-                .custom-scrollbar { scrollbar-width: thin; scrollbar-color: #c7c7c7 transparent; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #9fb5a8; border-radius: 10px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6d8f7b; }
+                .custom-scrollbar { scrollbar-width: thin; scrollbar-color: #9fb5a8 transparent; }
             `}</style>
 
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t.products.title}</h2>
-                    <button onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)} className="lg:hidden flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-indigo-600 border border-gray-300 rounded-lg px-4 py-2 transition">
-                        <FunnelIcon className="h-5 w-5" />
-                        {lang === "es" ? "Filtros" : "Filters"}
-                        {activeFilterCount > 0 && <span className="bg-indigo-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">{activeFilterCount}</span>}
-                    </button>
+                <div className="mb-10 overflow-hidden rounded-lg border border-emerald-900/10 bg-white shadow-xl shadow-emerald-950/8">
+                    <div className="match-ticker px-5 py-2 text-xs font-black uppercase text-white">
+                        {lang === "es" ? "Catalogo matchday - camisetas oficiales, alternativas y retro" : "Matchday catalog - home, away, third and retro shirts"}
+                    </div>
+                    <div className="flex flex-col justify-between gap-5 p-5 sm:flex-row sm:items-end">
+                        <div>
+                            <p className="text-sm font-black uppercase text-[#9a1c20]">{lang === "es" ? "Tienda de equipaciones" : "Kit shop"}</p>
+                            <h2 className="mt-1 text-4xl font-black text-emerald-950 sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>{t.products.title}</h2>
+                            <p className="mt-2 max-w-2xl text-sm font-medium text-emerald-950/65">
+                                {lang === "es" ? "Filtra por liga, equipo, marca, talla y color sin perder de vista la camiseta." : "Filter by league, club, brand, size, and color while keeping the shirt front and center."}
+                            </p>
+                        </div>
+                        <button onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)} className="flex items-center justify-center gap-2 rounded-lg border border-emerald-900/15 bg-emerald-950 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-800 lg:hidden">
+                            <FunnelIcon className="h-5 w-5" />
+                            {lang === "es" ? "Filtros" : "Filters"}
+                            {activeFilterCount > 0 && <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#f4c542] text-xs font-black text-emerald-950">{activeFilterCount}</span>}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Filtros móvil */}
                 {mobileFiltersOpen && (
-                    <div className="lg:hidden mb-8 bg-gray-50 rounded-xl p-6 border border-gray-200">
+                    <div className="mb-8 rounded-lg border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-950/8 lg:hidden">
                         <FilterSidebar />
                     </div>
                 )}
@@ -585,8 +598,8 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 {/* Layout: Sidebar IZQUIERDA + Grid */}
                 <div className="flex gap-8">
                     {/* Sidebar filtros — IZQUIERDA */}
-                    <div className="hidden lg:block w-56 shrink-0">
-                        <div className="sticky top-28 bg-gray-50 rounded-xl p-5 border border-gray-200">
+                    <div className="hidden lg:block w-60 shrink-0">
+                        <div className="sticky top-24 rounded-lg border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-950/8">
                             <FilterSidebar />
                         </div>
                     </div>
@@ -594,29 +607,33 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                     {/* Grid de productos */}
                     <div className="flex-1">
                         {productList.length === 0 ? (
-                            <div className="text-center py-20">
-                                <FunnelIcon className="mx-auto h-12 w-12 text-gray-400" />
-                                <h3 className="mt-2 text-sm font-semibold text-gray-900">{lang === "es" ? "No se encontraron productos" : "No products found"}</h3>
-                                <p className="mt-1 text-sm text-gray-500">{lang === "es" ? "Prueba a cambiar los filtros." : "Try changing the filters."}</p>
-                                <button onClick={clearAllFilters} className="mt-4 text-sm font-medium text-indigo-600 hover:text-indigo-500">{lang === "es" ? "Limpiar filtros" : "Clear filters"}</button>
+                            <div className="rounded-lg border border-emerald-900/10 bg-white py-20 text-center shadow-xl shadow-emerald-950/8">
+                                <FunnelIcon className="mx-auto h-12 w-12 text-emerald-900/35" />
+                                <h3 className="mt-2 text-sm font-black text-emerald-950">{lang === "es" ? "No se encontraron productos" : "No products found"}</h3>
+                                <p className="mt-1 text-sm text-emerald-950/60">{lang === "es" ? "Prueba a cambiar los filtros." : "Try changing the filters."}</p>
+                                <button onClick={clearAllFilters} className="mt-4 text-sm font-black text-[#9a1c20] hover:text-red-700">{lang === "es" ? "Limpiar filtros" : "Clear filters"}</button>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-5">
                                 {productList.map((product) => (
-                                    <div key={product._id || product.id} className="group relative cursor-pointer" onClick={() => openDetail(product)}>
-                                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 lg:aspect-none group-hover:opacity-90 lg:h-60 relative transition-all duration-300 group-hover:shadow-lg group-hover:scale-[1.02]">
-                                            <img alt={product.imageAlt} src={product.imageSrc} className="h-full w-full object-cover object-center lg:h-full lg:w-full" />
-                                            <span className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-gray-700 px-2 py-0.5 rounded-full shadow-sm">{product.liga || "La Liga"}</span>
-                                            <button onClick={(e) => handleAddToCart(e, product)} className="absolute bottom-3 right-3 z-20 bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0" title={lang === "es" ? "Añadir al carrito" : "Add to cart"}>
+                                    <div key={product._id || product.id} className="product-card group relative cursor-pointer overflow-hidden rounded-lg border border-emerald-900/10 bg-white shadow-lg shadow-emerald-950/8" onClick={() => openDetail(product)}>
+                                        <div className="kit-image-stage relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden p-4">
+                                            <img alt={product.imageAlt} src={product.imageSrc} className="product-image h-full w-full object-contain object-center drop-shadow-xl" />
+                                            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-700 via-[#f4c542] to-[#9a1c20]"></div>
+                                            <span className="glass-dark absolute left-3 top-3 rounded-md px-3 py-1 text-[10px] font-black uppercase text-white/95 shadow-lg">{product.liga || "La Liga"}</span>
+                                            <button onClick={(e) => handleAddToCart(e, product)} className="absolute bottom-3 right-3 z-20 rounded-lg bg-emerald-950 p-2.5 text-[#f4c542] shadow-xl transition-all duration-300 hover:scale-110 hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:ring-offset-2" title={lang === "es" ? "Añadir al carrito" : "Add to cart"}>
                                                 <ShoppingCartIcon className="h-4 w-4" />
                                             </button>
                                         </div>
-                                        <div className="mt-2 flex justify-between">
-                                            <div className="min-w-0 flex-1">
-                                                <h3 className="text-xs text-gray-700 font-medium truncate">{product.name[lang]}</h3>
-                                                <p className="mt-0.5 text-xs text-gray-500">{product.color[lang]}</p>
+                                        <div className="p-4">
+                                            <p className="mb-1 text-[11px] font-black uppercase text-[#9a1c20]">{product.equip}</p>
+                                            <div className="flex justify-between items-start">
+                                                <div className="min-w-0 flex-1">
+                                                    <h3 className="truncate text-sm font-black text-emerald-950">{product.name[lang]}</h3>
+                                                    <p className="mt-1 text-xs font-semibold text-emerald-900/55">{product.color[lang]}</p>
+                                                </div>
+                                                <span className="ml-3 shrink-0 rounded-md bg-[#fff4cf] px-2.5 py-1 text-sm font-black text-[#8a6200]">{product.price}</span>
                                             </div>
-                                            <p className="text-xs font-bold text-gray-900 ml-2 shrink-0">{product.price}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -631,15 +648,15 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={closeDetail}>
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" />
 
-                    <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto z-10 custom-scrollbar" onClick={(e) => e.stopPropagation()}>
-                        <button onClick={closeDetail} className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-gray-100 transition">
-                            <XMarkIcon className="h-5 w-5 text-gray-600" />
+                    <div className="custom-scrollbar relative z-10 max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                        <button onClick={closeDetail} className="absolute right-4 top-4 z-20 rounded-full bg-white/90 p-2 shadow-md backdrop-blur-sm transition hover:bg-emerald-50">
+                            <XMarkIcon className="h-5 w-5 text-emerald-950" />
                         </button>
 
                         <div className="md:flex">
                             {/* Imagen */}
-                            <div className="md:w-1/2 bg-gray-100 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
-                                <img src={selectedProduct.imageSrc} alt={selectedProduct.imageAlt} className="w-full h-full object-cover object-center min-h-[300px] md:min-h-[400px] rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none" />
+                            <div className="kit-image-stage flex items-center justify-center p-6 md:w-1/2">
+                                <img src={selectedProduct.imageSrc} alt={selectedProduct.imageAlt} className="min-h-[300px] w-full object-contain object-center drop-shadow-2xl md:min-h-[460px]" />
                             </div>
 
                             {/* Info */}
@@ -647,18 +664,18 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                                 <div className="flex-1">
                                     {/* Badges */}
                                     <div className="flex flex-wrap gap-2 mb-3">
-                                        <span className="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">{selectedProduct.equip}</span>
-                                        <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-full">{selectedProduct.liga || "La Liga"}</span>
-                                        <span className="bg-amber-50 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">{selectedProduct.marca}</span>
+                                        <span className="rounded-md bg-emerald-950 px-2.5 py-1 text-xs font-black text-white">{selectedProduct.equip}</span>
+                                        <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-black text-emerald-800">{selectedProduct.liga || "La Liga"}</span>
+                                        <span className="rounded-md bg-[#fff4cf] px-2.5 py-1 text-xs font-black text-[#8a6200]">{selectedProduct.marca}</span>
                                     </div>
 
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-1">{selectedProduct.name[lang]}</h2>
-                                    <p className="text-sm text-indigo-600 font-medium mb-4">{selectedProduct.color[lang]}</p>
-                                    <p className="text-3xl font-extrabold text-gray-900 mb-4">{selectedProduct.price}</p>
+                                    <h2 className="mb-1 text-2xl font-black text-emerald-950">{selectedProduct.name[lang]}</h2>
+                                    <p className="mb-4 text-sm font-bold text-[#9a1c20]">{selectedProduct.color[lang]}</p>
+                                    <p className="mb-4 text-3xl font-black text-emerald-950">{selectedProduct.price}</p>
 
                                     {/* Color principal */}
                                     <div className="flex items-center gap-2 mb-4">
-                                        <span className="text-sm text-gray-600">{lang === "es" ? "Color:" : "Color:"}</span>
+                                        <span className="text-sm text-emerald-950/65">{lang === "es" ? "Color:" : "Color:"}</span>
                                         <span
                                             className="inline-block h-4 w-4 rounded-full"
                                             style={{
@@ -666,28 +683,28 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                                                 border: selectedProduct.colorPrincipal === "Blanco" ? "1.5px solid #d1d5db" : "none"
                                             }}
                                         />
-                                        <span className="text-sm font-medium text-gray-700">{selectedProduct.colorPrincipal}</span>
+                                        <span className="text-sm font-bold text-emerald-950">{selectedProduct.colorPrincipal}</span>
                                     </div>
 
-                                    <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                                    <p className="mb-4 text-sm leading-relaxed text-emerald-950/68">
                                         {typeof selectedProduct.descripcio === "object" ? selectedProduct.descripcio[lang] : selectedProduct.descripcio}
                                     </p>
 
                                     {/* Tallas */}
                                     <div className="mb-4">
-                                        <h4 className="text-sm font-semibold text-gray-900 mb-2">{lang === "es" ? "Tallas disponibles" : "Available Sizes"}</h4>
+                                        <h4 className="mb-2 text-sm font-black text-emerald-950">{lang === "es" ? "Tallas disponibles" : "Available Sizes"}</h4>
                                         <div className="flex gap-2">
                                             {SIZES.map(size => (
-                                                <span key={size} className={`px-3 py-1.5 text-sm font-medium rounded-md border transition ${size === (selectedProduct.talla || "M") ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-700 border-gray-300"}`}>{size}</span>
+                                                <span key={size} className={`rounded-md border px-3 py-1.5 text-sm font-bold transition ${size === (selectedProduct.talla || "M") ? "bg-emerald-950 text-white border-emerald-950" : "bg-white text-emerald-950/70 border-emerald-900/15"}`}>{size}</span>
                                             ))}
                                         </div>
                                     </div>
 
                                     {/* Envío y devoluciones - DESPLEGABLE */}
-                                    <div className="border border-gray-200 rounded-lg mb-4">
+                                    <div className="mb-4 rounded-lg border border-emerald-900/10">
                                         <button
                                             onClick={() => setShippingOpen(!shippingOpen)}
-                                            className="flex items-center justify-between w-full px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition rounded-lg"
+                                            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-black text-emerald-950 transition hover:bg-emerald-50"
                                         >
                                             <span className="flex items-center gap-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -701,7 +718,7 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                                         </button>
                                         <div className={`overflow-hidden transition-all duration-300 ease-in-out ${shippingOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}>
                                             <div className="px-4 pb-4 pt-1">
-                                                <pre className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap font-sans">
+                                                <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-emerald-950/65">
                                                     {getShippingInfo(selectedProduct).content}
                                                 </pre>
                                             </div>
@@ -712,7 +729,7 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                                 {/* Botón añadir al carrito */}
                                 <button
                                     onClick={(e) => { handleAddToCart(e, selectedProduct); closeDetail(); }}
-                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-xl active:scale-[0.98]"
+                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-950 px-6 py-3.5 font-black text-white shadow-lg transition-all duration-200 hover:bg-emerald-800 hover:shadow-xl active:scale-[0.98]"
                                 >
                                     <ShoppingCartIcon className="h-5 w-5" />
                                     {lang === "es" ? "Añadir al carrito" : "Add to Cart"}

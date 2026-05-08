@@ -1,0 +1,18 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package.json package-lock.json ./
+
+# Instalar todas las dependencias
+RUN npm install
+
+# Copiar el código fuente
+COPY . .
+
+# Exponer el puerto de Vite
+EXPOSE 5173
+
+# Arrancar Vite dev server (accesible desde fuera del contenedor)
+CMD ["npm", "run", "dev", "--", "--host"]
