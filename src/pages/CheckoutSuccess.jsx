@@ -60,7 +60,7 @@ export default function CheckoutSuccess() {
     // Prioridad: 1. State de navegación, 2. Params de la URL
     const [orderId, setOrderId] = useState(location.state?.orderId || urlOrderId);
     const [total, setTotal] = useState(location.state?.total || 0);
-    const [lang, setLang] = useState(location.state?.lang || "en");
+    const [lang, setLang] = useState(location.state?.lang || "es");
     
     const t = translations[lang]?.success || translations.en.success;
 
@@ -214,7 +214,7 @@ export default function CheckoutSuccess() {
                 {/* Footer badge */}
                 <div className="text-center mt-6 fade-up-5">
                     <p className="text-xs text-gray-400">
-                        EXPOMANIA — {lang === "es" ? "Gracias por confiar en nosotros" : "Thank you for trusting us"} ⚽
+                        EXPOMANIA — Gracias por confiar en nosotros ⚽
                     </p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { translations } from "./translations";
-import { ShoppingCartIcon, FunnelIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon, FunnelIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon, TruckIcon, ShieldCheckIcon, ArrowPathRoundedSquareIcon } from "@heroicons/react/24/outline";
 
 const API_URL = "http://localhost:3000/api";
 
@@ -208,14 +208,13 @@ function FilterSection({ title, isOpen, onToggle, children }) {
     );
 }
 
-export default function Products({ lang = "en", onAddToCart }) {
+export default function Products({ lang = "es", onAddToCart }) {
     const t = translations[lang];
     const [productList, setProductList] = useState(fallbackProducts);
     const [originalList, setOriginalList] = useState(fallbackProducts);
     const [loading, setLoading] = useState(true);
 
     // Filtros
-    const [selectedTeams, setSelectedTeams] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [selectedLigas, setSelectedLigas] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
@@ -226,11 +225,10 @@ export default function Products({ lang = "en", onAddToCart }) {
 
     // Secciones de filtro colapsables
     const [openSections, setOpenSections] = useState({
-        liga: true,
-        equipo: true,
-        equipacion: true,
+        liga: false,
+        equipacion: false,
         talla: true,
-        marca: true,
+        marca: false,
         color: false,
         precio: false,
     });
@@ -242,9 +240,6 @@ export default function Products({ lang = "en", onAddToCart }) {
     // Modal de detalle
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [shippingOpen, setShippingOpen] = useState(false);
-
-    // Lista dinámica de equipos
-    const [availableTeams, setAvailableTeams] = useState([]);
 
     // Helper para extraer precio numérico
     const parsePrice = (priceStr) => {
@@ -278,20 +273,14 @@ export default function Products({ lang = "en", onAddToCart }) {
                     }));
                     setProductList(mappedProducts);
                     setOriginalList(mappedProducts);
-                    const teams = [...new Set(mappedProducts.map(p => p.equip))].sort();
-                    setAvailableTeams(teams);
                 } else {
                     setProductList(fallbackProducts);
                     setOriginalList(fallbackProducts);
-                    const teams = [...new Set(fallbackProducts.map(p => p.equip))].sort();
-                    setAvailableTeams(teams);
                 }
             } catch (error) {
                 console.error("Error cargando productos desde API:", error);
                 setProductList(fallbackProducts);
                 setOriginalList(fallbackProducts);
-                const teams = [...new Set(fallbackProducts.map(p => p.equip))].sort();
-                setAvailableTeams(teams);
             }
             setLoading(false);
         };
@@ -304,10 +293,6 @@ export default function Products({ lang = "en", onAddToCart }) {
         if (originalList.length === 0) return;
 
         let filtered = originalList;
-
-        if (selectedTeams.length > 0) {
-            filtered = filtered.filter(p => selectedTeams.includes(p.equip));
-        }
 
         if (selectedTypes.length > 0) {
             const typeTag = (p) => {
@@ -349,7 +334,7 @@ export default function Products({ lang = "en", onAddToCart }) {
         }
 
         setProductList(filtered);
-    }, [selectedTeams, selectedTypes, selectedLigas, selectedSizes, selectedMarcas, selectedColores, selectedPriceRanges, originalList]);
+    }, [selectedTypes, selectedLigas, selectedSizes, selectedMarcas, selectedColores, selectedPriceRanges, originalList]);
 
     const toggleFilter = (arr, setArr, value) => {
         if (arr.includes(value)) {
@@ -360,7 +345,6 @@ export default function Products({ lang = "en", onAddToCart }) {
     };
 
     const clearAllFilters = () => {
-        setSelectedTeams([]);
         setSelectedTypes([]);
         setSelectedLigas([]);
         setSelectedSizes([]);
@@ -369,7 +353,7 @@ export default function Products({ lang = "en", onAddToCart }) {
         setSelectedPriceRanges([]);
     };
 
-    const activeFilterCount = selectedTeams.length + selectedTypes.length + selectedLigas.length + selectedSizes.length + selectedMarcas.length + selectedColores.length + selectedPriceRanges.length;
+    const activeFilterCount = selectedTypes.length + selectedLigas.length + selectedSizes.length + selectedMarcas.length + selectedColores.length + selectedPriceRanges.length;
 
     const handleAddToCart = (e, product) => {
         e.preventDefault();
@@ -437,15 +421,20 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
 
     // =========== COMPONENTE DE FILTROS SIDEBAR ===========
     const FilterSidebar = () => (
-        <div className="overflow-y-auto max-h-[calc(100vh-10rem)] pr-2 custom-scrollbar">
+        <div className="space-y-1">
             {/* Header */}
-            <div className="sticky top-0 z-10 mb-4 flex items-center justify-between bg-white py-2">
-                <h3 className="flex items-center gap-2 text-lg font-black text-emerald-950">
-                    <FunnelIcon className="h-5 w-5" />
-                    {lang === "es" ? "Filtros" : "Filters"}
-                </h3>
+            <div className="mb-4 flex items-start justify-between gap-3 border-b border-emerald-900/10 pb-4">
+                <div>
+                    <h3 className="flex items-center gap-2 text-lg font-black text-emerald-950">
+                        <FunnelIcon className="h-5 w-5" />
+                        {lang === "es" ? "Filtros" : "Filters"}
+                    </h3>
+                    <p className="mt-1 text-xs font-semibold text-emerald-950/55">
+                        {lang === "es" ? "Afinar catalogo" : "Refine catalog"}
+                    </p>
+                </div>
                 {activeFilterCount > 0 && (
-                    <button onClick={clearAllFilters} className="text-xs font-black text-[#9a1c20] transition hover:text-red-700">
+                    <button onClick={clearAllFilters} className="rounded-md bg-[#fff4cf] px-2.5 py-1 text-xs font-black text-[#8a6200] transition hover:bg-[#f4c542]/70">
                         {lang === "es" ? "Limpiar" : "Clear"} ({activeFilterCount})
                     </button>
                 )}
@@ -458,18 +447,6 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                         <label key={liga} className="flex items-center gap-2 cursor-pointer group">
                             <input type="checkbox" checked={selectedLigas.includes(liga)} onChange={() => toggleFilter(selectedLigas, setSelectedLigas, liga)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
                             <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{liga}</span>
-                        </label>
-                    ))}
-                </div>
-            </FilterSection>
-
-            {/* Equipo */}
-            <FilterSection title={lang === "es" ? "Equipo" : "Team"} isOpen={openSections.equipo} onToggle={() => toggleSection("equipo")}>
-                <div className="space-y-2">
-                    {availableTeams.map(team => (
-                        <label key={team} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={selectedTeams.includes(team)} onChange={() => toggleFilter(selectedTeams, setSelectedTeams, team)} className="h-4 w-4 rounded border-emerald-900/20 text-emerald-700 focus:ring-emerald-700" />
-                            <span className="text-sm font-medium text-emerald-950/70 transition group-hover:text-emerald-950">{team}</span>
                         </label>
                     ))}
                 </div>
@@ -556,6 +533,48 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
         </div>
     );
 
+    const SidebarPerks = () => (
+        <div className="overflow-hidden rounded-lg bg-emerald-950 text-white shadow-xl shadow-emerald-950/12">
+            <div className="match-ticker px-4 py-2 text-[10px] font-black uppercase tracking-wide text-white">
+                {lang === "es" ? "Compra sin dudas" : "Shop with confidence"}
+            </div>
+            <div className="space-y-4 p-5">
+                <div>
+                    <p className="text-2xl font-black text-[#f4c542]" style={{ fontFamily: 'var(--font-display)' }}>
+                        {productList.length}
+                    </p>
+                    <p className="text-xs font-black uppercase text-white/80">
+                        {lang === "es" ? "camisetas en pantalla" : "shirts on screen"}
+                    </p>
+                </div>
+
+                <div className="space-y-3">
+                    <div className="flex gap-3">
+                        <TruckIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#f4c542]" />
+                        <div>
+                            <p className="text-sm font-black">{lang === "es" ? "Envio rapido" : "Fast shipping"}</p>
+                            <p className="text-xs font-medium leading-relaxed text-white/65">{lang === "es" ? "Entrega 24/48h en Espana." : "24/48h delivery in Spain."}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <ShieldCheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#f4c542]" />
+                        <div>
+                            <p className="text-sm font-black">{lang === "es" ? "Pago seguro" : "Secure payment"}</p>
+                            <p className="text-xs font-medium leading-relaxed text-white/65">{lang === "es" ? "Checkout protegido con Stripe." : "Protected Stripe checkout."}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-3">
+                        <ArrowPathRoundedSquareIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#f4c542]" />
+                        <div>
+                            <p className="text-sm font-black">{lang === "es" ? "31 dias" : "31 days"}</p>
+                            <p className="text-xs font-medium leading-relaxed text-white/65">{lang === "es" ? "Devoluciones faciles." : "Easy returns."}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-[#f5f7f2] pb-16 pt-24 text-emerald-950 sm:pt-28 sm:pb-24">
             <style>{`
@@ -577,7 +596,7 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                             <p className="text-sm font-black uppercase text-[#9a1c20]">{lang === "es" ? "Tienda de equipaciones" : "Kit shop"}</p>
                             <h2 className="mt-1 text-4xl font-black text-emerald-950 sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>{t.products.title}</h2>
                             <p className="mt-2 max-w-2xl text-sm font-medium text-emerald-950/65">
-                                {lang === "es" ? "Filtra por liga, equipo, marca, talla y color sin perder de vista la camiseta." : "Filter by league, club, brand, size, and color while keeping the shirt front and center."}
+                                {lang === "es" ? "Filtra por liga, equipacion, marca, talla y color sin perder de vista la camiseta." : "Filter by league, kit type, brand, size, and color while keeping the shirt front and center."}
                             </p>
                         </div>
                         <button onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)} className="flex items-center justify-center gap-2 rounded-lg border border-emerald-900/15 bg-emerald-950 px-4 py-3 text-sm font-black text-white transition hover:bg-emerald-800 lg:hidden">
@@ -595,17 +614,36 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                     </div>
                 )}
 
-                {/* Layout: Sidebar IZQUIERDA + Grid */}
-                <div className="flex gap-8">
-                    {/* Sidebar filtros — IZQUIERDA */}
-                    <div className="hidden lg:block w-60 shrink-0">
-                        <div className="sticky top-24 rounded-lg border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-950/8">
-                            <FilterSidebar />
+                {/* Layout: filtros a la izquierda + grid */}
+                <div className="grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)]">
+                    {/* Sidebar filtros */}
+                    <aside className="hidden lg:block">
+                        <div className="space-y-4">
+                            <div className="rounded-lg border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-950/8">
+                                <FilterSidebar />
+                            </div>
+                            <SidebarPerks />
                         </div>
-                    </div>
+                    </aside>
 
                     {/* Grid de productos */}
-                    <div className="flex-1">
+                    <div className="min-w-0">
+                        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <p className="text-xs font-black uppercase text-[#9a1c20]">
+                                    {lang === "es" ? `${productList.length} camisetas disponibles` : `${productList.length} shirts available`}
+                                </p>
+                                <h3 className="mt-1 text-2xl font-black text-emerald-950" style={{ fontFamily: 'var(--font-display)' }}>
+                                    {lang === "es" ? "Coleccion principal" : "Main collection"}
+                                </h3>
+                            </div>
+                            {activeFilterCount > 0 && (
+                                <button onClick={clearAllFilters} className="w-fit rounded-lg border border-emerald-900/10 bg-white px-3 py-2 text-xs font-black uppercase text-[#9a1c20] shadow-sm transition hover:border-[#9a1c20]/35">
+                                    {lang === "es" ? "Limpiar filtros" : "Clear filters"}
+                                </button>
+                            )}
+                        </div>
+
                         {productList.length === 0 ? (
                             <div className="rounded-lg border border-emerald-900/10 bg-white py-20 text-center shadow-xl shadow-emerald-950/8">
                                 <FunnelIcon className="mx-auto h-12 w-12 text-emerald-900/35" />
@@ -614,32 +652,43 @@ You will have 31 calendar days to return your order of the ${teamName} shirt. Te
                                 <button onClick={clearAllFilters} className="mt-4 text-sm font-black text-[#9a1c20] hover:text-red-700">{lang === "es" ? "Limpiar filtros" : "Clear filters"}</button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-5">
+                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 {productList.map((product) => (
-                                    <div key={product._id || product.id} className="product-card group relative cursor-pointer overflow-hidden rounded-lg border border-emerald-900/10 bg-white shadow-lg shadow-emerald-950/8" onClick={() => openDetail(product)}>
-                                        <div className="kit-image-stage relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden p-4">
-                                            <img alt={product.imageAlt} src={product.imageSrc} className="product-image h-full w-full object-contain object-center drop-shadow-xl" />
+                                    <article key={product._id || product.id} className="product-card group relative cursor-pointer overflow-hidden rounded-lg border border-emerald-900/10 bg-white shadow-lg shadow-emerald-950/8" onClick={() => openDetail(product)}>
+                                        <div className="kit-image-stage relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden p-5 sm:p-6">
                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-700 via-[#f4c542] to-[#9a1c20]"></div>
-                                            <span className="glass-dark absolute left-3 top-3 rounded-md px-3 py-1 text-[10px] font-black uppercase text-white/95 shadow-lg">{product.liga || "La Liga"}</span>
-                                            <button onClick={(e) => handleAddToCart(e, product)} className="absolute bottom-3 right-3 z-20 rounded-lg bg-emerald-950 p-2.5 text-[#f4c542] shadow-xl transition-all duration-300 hover:scale-110 hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:ring-offset-2" title={lang === "es" ? "Añadir al carrito" : "Add to cart"}>
-                                                <ShoppingCartIcon className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                        <div className="p-4">
-                                            <p className="mb-1 text-[11px] font-black uppercase text-[#9a1c20]">{product.equip}</p>
-                                            <div className="flex justify-between items-start">
-                                                <div className="min-w-0 flex-1">
-                                                    <h3 className="truncate text-sm font-black text-emerald-950">{product.name[lang]}</h3>
-                                                    <p className="mt-1 text-xs font-semibold text-emerald-900/55">{product.color[lang]}</p>
-                                                </div>
-                                                <span className="ml-3 shrink-0 rounded-md bg-[#fff4cf] px-2.5 py-1 text-sm font-black text-[#8a6200]">{product.price}</span>
+                                            <div className="absolute left-3 top-3 z-20 flex flex-wrap gap-2">
+                                                <span className="glass-dark rounded-md px-3 py-1 text-[10px] font-black uppercase text-white/95 shadow-lg">{product.liga || "La Liga"}</span>
+                                                <span className="rounded-md bg-white/90 px-3 py-1 text-[10px] font-black uppercase text-emerald-950 shadow-sm">{product.marca}</span>
+                                            </div>
+                                            <img alt={product.imageAlt} src={product.imageSrc} className="product-image relative z-10 h-[86%] w-full object-contain object-center drop-shadow-2xl" />
+                                            <div className="absolute inset-x-3 bottom-3 z-20 flex items-end justify-between gap-2">
+                                                <span className="rounded-md bg-white/95 px-3 py-2 text-lg font-black text-emerald-950 shadow-lg shadow-emerald-950/10">{product.price}</span>
+                                                <button onClick={(e) => handleAddToCart(e, product)} className="flex items-center gap-2 rounded-lg bg-emerald-950 px-3 py-2.5 text-sm font-black text-[#f4c542] shadow-xl transition-all duration-300 hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-[#f4c542] focus:ring-offset-2" title={lang === "es" ? "Añadir al carrito" : "Add to cart"}>
+                                                    <ShoppingCartIcon className="h-4 w-4" />
+                                                    <span className="hidden sm:inline">{lang === "es" ? "Añadir" : "Add"}</span>
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div className="space-y-3 p-4">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <p className="min-w-0 truncate text-[11px] font-black uppercase text-[#9a1c20]">{product.equip}</p>
+                                                <span className="shrink-0 rounded-md bg-emerald-50 px-2 py-1 text-[11px] font-black text-emerald-800">
+                                                    {lang === "es" ? "Talla" : "Size"} {product.talla || "M"}
+                                                </span>
+                                            </div>
+                                            <h3 className="min-h-[2.6rem] text-base font-black leading-tight text-emerald-950">{product.name[lang]}</h3>
+                                            <div className="flex items-center justify-between gap-3 border-t border-emerald-900/10 pt-3">
+                                                <p className="text-sm font-bold text-emerald-900/65">{product.color[lang]}</p>
+                                                <span className="rounded-md bg-[#fff4cf] px-2.5 py-1 text-xs font-black text-[#8a6200]">{product.colorPrincipal}</span>
+                                            </div>
+                                        </div>
+                                    </article>
                                 ))}
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
 

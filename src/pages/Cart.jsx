@@ -15,7 +15,7 @@ import {
 export default function Cart() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { cartItems: initialItems = [], lang = "en" } = location.state || {};
+    const { cartItems: initialItems = [], lang = "es" } = location.state || {};
     const [cartItems, setCartItems] = useState(initialItems);
     const [removingId, setRemovingId] = useState(null);
 

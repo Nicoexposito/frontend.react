@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,89 +18,134 @@ export default function Login() {
             });
             const data = await res.json();
             if (data.status === "success") {
-                // Guardar datos del usuario en localStorage
                 localStorage.setItem("loggedUser", JSON.stringify(data.data.usuari));
                 localStorage.setItem("token", data.data.token);
                 navigate("/");
             } else {
-                setError(data.message || "Login failed");
+                setError(data.message || "Credenciales incorrectas");
             }
-        } catch (err) {
-            setError("Connection error");
+        } catch {
+            setError("Error de conexión con el servidor");
         }
     };
 
-
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
-            {/* Background effects */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-                <div className="absolute top-[-30%] right-[-10%] w-[40rem] h-[40rem] rounded-full bg-indigo-600/15 blur-[120px] animate-pulse-glow"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-purple-600/10 blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
-            </div>
-
-            <div className="relative z-10 w-full max-w-md px-4">
-                {/* Back to home */}
-                <Link to="/" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-8 group">
-                    <svg className="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                    Back to store
-                </Link>
+        <div style={{
+            height: '100vh',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#0d1a12',
+            fontFamily: "'Inter', sans-serif",
+        }}>
+            <div style={{
+                width: '100%',
+                maxWidth: '380px',
+                padding: '0 20px',
+            }}>
+                {/* Logo */}
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
+                        <span style={{
+                            fontSize: '22px', fontWeight: '900',
+                            letterSpacing: '0.1em', color: '#d4af37',
+                        }}>⚽ EXPOMANIA</span>
+                    </Link>
+                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.35)', margin: '6px 0 0' }}>
+                        Tienda de camisetas de fútbol
+                    </p>
+                </div>
 
                 {/* Card */}
-                <div className="glass-dark rounded-3xl p-8 shadow-2xl shadow-black/30">
-                    {/* Logo */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-black gradient-text tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>EXPOMANIA</h1>
-                        <p className="text-slate-400 text-sm mt-2">Welcome back</p>
-                    </div>
+                <div style={{
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    borderRadius: '16px',
+                    padding: '32px',
+                }}>
+                    <h1 style={{
+                        fontSize: '20px', fontWeight: '800', color: 'white',
+                        margin: '0 0 20px', letterSpacing: '-0.01em',
+                    }}>Iniciar sesión</h1>
 
                     {error && (
-                        <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-300 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
-                            {error}
-                        </div>
+                        <div style={{
+                            background: 'rgba(155,28,48,0.15)',
+                            border: '1px solid rgba(155,28,48,0.4)',
+                            color: '#fca5a5', padding: '10px 14px',
+                            borderRadius: '10px', fontSize: '13px',
+                            marginBottom: '16px',
+                        }}>{error}</div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+                            <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', marginBottom: '6px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                                Correo electrónico
+                            </label>
                             <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-300"
-                                placeholder="you@example.com"
+                                type="email" value={email}
+                                onChange={e => setEmail(e.target.value)} required
+                                placeholder="tu@correo.com"
+                                style={{
+                                    width: '100%', padding: '11px 14px', boxSizing: 'border-box',
+                                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                                    borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none',
+                                }}
+                                onFocus={e => { e.target.style.borderColor = 'rgba(212,175,55,0.5)'; }}
+                                onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; }}
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+                            <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', marginBottom: '6px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                                Contraseña
+                            </label>
                             <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-300"
+                                type="password" value={password}
+                                onChange={e => setPassword(e.target.value)} required
                                 placeholder="••••••••"
+                                style={{
+                                    width: '100%', padding: '11px 14px', boxSizing: 'border-box',
+                                    background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                                    borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none',
+                                }}
+                                onFocus={e => { e.target.style.borderColor = 'rgba(212,175,55,0.5)'; }}
+                                onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; }}
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="btn-shine w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3.5 rounded-xl font-bold text-base shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                            style={{
+                                width: '100%', padding: '12px',
+                                background: '#9a1c20', border: 'none',
+                                borderRadius: '10px', color: 'white',
+                                fontSize: '14px', fontWeight: '700',
+                                cursor: 'pointer', marginTop: '4px',
+                                transition: 'background 0.2s',
+                            }}
+                            onMouseEnter={e => e.target.style.background = '#b02030'}
+                            onMouseLeave={e => e.target.style.background = '#9a1c20'}
                         >
-                            Sign In
+                            Entrar
                         </button>
                     </form>
-
-                    <p className="text-center text-sm text-slate-400 mt-6">
-                        Don't have an account?{" "}
-                        <Link to="/register" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">
-                            Register
-                        </Link>
-                    </p>
                 </div>
+
+                {/* Footer links */}
+                <p style={{ textAlign: 'center', fontSize: '13px', color: 'rgba(255,255,255,0.35)', marginTop: '20px' }}>
+                    ¿No tienes cuenta?{' '}
+                    <Link to="/register" style={{ color: '#d4af37', fontWeight: '600', textDecoration: 'none' }}>
+                        Regístrate
+                    </Link>
+                </p>
+                <p style={{ textAlign: 'center', marginTop: '10px' }}>
+                    <Link to="/" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.25)', textDecoration: 'none' }}>
+                        ← Volver a la tienda
+                    </Link>
+                </p>
             </div>
         </div>
     );

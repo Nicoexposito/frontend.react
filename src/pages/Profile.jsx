@@ -105,7 +105,7 @@ const t = {
 export default function Profile() {
   const navigate = useNavigate();
   const fileRef = useRef(null);
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("es");
   const [activeTab, setActiveTab] = useState("personal");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

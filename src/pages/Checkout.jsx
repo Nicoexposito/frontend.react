@@ -80,7 +80,7 @@ function CheckoutStepper({ currentStep, t }) {
 export default function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { cartItems = [], lang = "en" } = location.state || {};
+    const { cartItems = [], lang = "es" } = location.state || {};
     const t = translations[lang]?.checkout || translations.en.checkout;
 
     // Detectar usuario logueado

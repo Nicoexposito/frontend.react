@@ -118,10 +118,9 @@ export const translations = {
     es: {
         navigation: {
             home: "Inicio",
-            about: "Sobre nosotros",
             products: "Productos",
             retros: "Retros",
-            contact: "Contacto",
+            about: "Sobre nosotros / Contacto",
         },
         hero: {
             title: "EXPOMANIA",

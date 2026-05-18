@@ -12,7 +12,7 @@ import {
 export default function CheckoutCancel() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { lang = "en" } = location.state || {};
+    const { lang = "es" } = location.state || {};
     const t = translations[lang]?.cancel || translations.en.cancel;
 
     return (
@@ -101,7 +101,7 @@ export default function CheckoutCancel() {
                 {/* Footer */}
                 <div className="text-center mt-6 fade-up-4">
                     <p className="text-xs text-gray-400">
-                        EXPOMANIA — {lang === "es" ? "Tu carrito te espera" : "Your cart is waiting for you"} ⚽
+                        EXPOMANIA — Tu carrito te espera ⚽
                     </p>
                 </div>
             </div>
