@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { ChartBarIcon, UsersIcon, ShoppingBagIcon, CurrencyEuroIcon, ArrowRightOnRectangleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import ProductFormModal from "./ProductFormModal";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
@@ -46,6 +47,8 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -279,7 +282,12 @@ export default function AdminDashboard() {
           <div className="animate-fade-in">
             <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <h2 className="text-2xl font-black">Gestion de productos</h2>
-              <button className="rounded-lg bg-emerald-950 px-4 py-2 text-sm font-black text-white transition hover:bg-emerald-800">Nuevo producto</button>
+              <button 
+                onClick={() => { setEditingProduct(null); setIsModalOpen(true); }}
+                className="rounded-lg bg-emerald-950 px-4 py-2 text-sm font-black text-white transition hover:bg-emerald-800"
+              >
+                Nuevo producto
+              </button>
             </div>
             <div className="overflow-hidden rounded-lg border border-emerald-900/10 bg-white shadow-xl shadow-emerald-950/8">
               <div className="overflow-x-auto">
@@ -308,7 +316,12 @@ export default function AdminDashboard() {
                         <td className="p-4 font-bold">{p.stock ?? 0}</td>
                         <td className="p-4">
                           <div className="flex gap-3">
-                            <button className="font-black text-sky-700 hover:underline">Editar</button>
+                            <button 
+                              onClick={() => { setEditingProduct(p); setIsModalOpen(true); }}
+                              className="font-black text-sky-700 hover:underline"
+                            >
+                              Editar
+                            </button>
                             <button onClick={() => deleteProduct(p._id)} className="font-black text-[#9a1c20] hover:underline">Eliminar</button>
                           </div>
                         </td>
@@ -380,6 +393,14 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        <ProductFormModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          product={editingProduct} 
+          onSave={fetchProducts}
+          token={token}
+        />
       </main>
     </div>
   );
