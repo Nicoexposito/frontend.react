@@ -295,7 +295,7 @@ export default function AdminDashboard() {
                       <tr key={p._id} className="hover:bg-emerald-50/60">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <div className="kit-image-stage flex h-12 w-12 items-center justify-center rounded-md p-1">
+                            <div className="kit-image-stage relative overflow-hidden flex h-12 w-12 items-center justify-center rounded-md p-1">
                               <img src={p.imageSrc} alt="" className="h-full w-full object-contain" />
                             </div>
                             <div>
